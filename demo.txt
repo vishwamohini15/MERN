@@ -1,0 +1,32 @@
+Event: 'close'
+Event: 'error'
+watcher.close()
+watcher.ref()
+watcher.unref()
+Class: fs.StatWatcher
+watcher.ref()
+watcher.unref()
+Class: fs.ReadStream
+Event: 'close'
+Event: 'open'
+Event: 'ready'
+readStream.bytesRead
+readStream.path
+readStream.pending
+Class: fs.Stats
+stats.isBlockDevice
+stats.isCharacterDevice
+stats.isDirectory
+stats.isFile
+stats.isFIFO
+stats.isSymbolicLink
+stats.isSocket
+stats.dev
+stats.ino
+stats.mode
+stats.nlink
+stats.uid
+stats.gid
+stats.rdev
+stats.size
+stats.blksize

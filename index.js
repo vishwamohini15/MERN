@@ -17,45 +17,63 @@ server.use(morgan('default'))
 
 server.use(express.static('public'))
 
-// server.use((req,res,next)=>{
-//      console.log(req.method,req.ip,req.hostname,new Date(), req.get('User-Agent'));
-//      next()
-// })
-
-const auth= (req,res,next)=>{
-     // console.log(req.query);
-
-     // if (req.body.password=='123') {
-     //      next()
-     // } else {
-     //      res.sendStatus(401);
-     // }
-     next()
-}
-
 
 //API - endpoint - Route
-server.get('/product/:id',auth, (req, res)=>{
-     console.log(req.params);
-     
-     res.json({type:'GET'})
+
+//products
+//API roots baseurl, google.com/api/v3
+
+//create post/products        C R U D
+server.post('/products', (req, res)=>{
+     console.log(req.body);
+     products.push(req.body);
+     res.status(201).json(req.body)
 })
 
-server.post('/',auth, (req, res)=>{
-     res.json({type:'post'})
+//Read get /products
+server.get('/products', (req, res)=>{
+     res.json(products)
 })
 
-server.put('/', (req, res)=>{
-     res.json({type:'Put'})
+//Read get /products/:id
+server.get('/products/:id', (req, res)=>{
+     const id= +req.params.id
+       const product=products.find(p=>p.id===id)
+     res.json(product)
 })
 
-server.delete('/', (req, res)=>{
-     res.json({type:'delete'})
+
+//update put /products/:id
+server.put('/products/:id', (req, res)=>{
+     const id= +req.params.id
+       const productindex=products.findIndex(p=>p.id===id)
+       products.splice(productindex,1,{...req.body,id:id})
+
+     res.status(201).json()
 })
 
-server.patch('/', (req, res)=>{
-     res.json({type:'Patch'})
+
+//update patch /products/:id
+server.patch('/products/:id', (req, res)=>{
+     const id= +req.params.id
+       const productindex=products.findIndex(p=>p.id===id)
+       const product=products[productindex]
+       products.splice(productindex,1,{...product,...req.body})
+
+     res.status(201).json()
 })
+
+//Delete put /products/:id
+server.delete('/products/:id', (req, res)=>{
+     const id= +req.params.id
+       const productindex=products.findIndex(p=>p.id===id)
+       const product=products[productindex]
+       products.splice(productindex,1)
+
+     res.status(201).json(product)
+})
+
+
 
 server.get('/demo', (req, res)=>{
      // res.json(products)

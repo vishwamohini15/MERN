@@ -1,49 +1,80 @@
-const http=require('http')
 const fs=require('fs')
-
 const index=fs.readFileSync('index.html', 'utf-8')
 const data=JSON.parse(fs.readFileSync('data.json', 'utf-8'));
 const products=data.products;
 
-// const data={age:7}
-const server = http.createServer((req, res) => {
-     console.log(req.url, req.method);
 
-if (req.url.startsWith('/product')) {
-   const id=req.url.split('/')[2]
-     const product=products.find(p=>p.id===(+id))
-     console.log(product);
+const express=require('express');
+const morgan=require('morgan')
 
-          res.setHeader("content-type", "text/html")
-          let modyfyindex=index.replace('**title**', product.title).replace("**url**", product.thumbnail).replace('**price**', product.price).replace('**rating**', product.rating)
-          res.end(modyfyindex)
-          return;
+const { type } = require('os');
+const { Agent } = require('http');
+const server= express();
+
+server.use(express.json())
+
+server.use(morgan('default'))
+
+server.use(express.static('public'))
+
+// server.use((req,res,next)=>{
+//      console.log(req.method,req.ip,req.hostname,new Date(), req.get('User-Agent'));
+//      next()
+// })
+
+const auth= (req,res,next)=>{
+     // console.log(req.query);
+
+     // if (req.body.password=='123') {
+     //      next()
+     // } else {
+     //      res.sendStatus(401);
+     // }
+     next()
 }
 
 
-     switch (req.url) {
-          case '/':
-               res.setHeader("content-type", "text/html")
-               res.end(index)
-               break;
-             case '/api':
-               res.setHeader("content-type", "application/json")
-               res.end(JSON.stringify(data))
-               break;
-            
-          default:
-               res.writeHead(404)
-               res.end()
-     }
+//API - endpoint - Route
+server.get('/product/:id',auth, (req, res)=>{
+     console.log(req.params);
      
-console.log("server started");
-// res.setHeader("dummy", "dummy value")
-// res.setHeader("content-type", "text/html")
-// res.end(JSON.stringify(data))
-// res.setHeader("content-type", "application/json")
-
-// res.end(index)
-
+     res.json({type:'GET'})
 })
 
-server.listen(8080)
+server.post('/',auth, (req, res)=>{
+     res.json({type:'post'})
+})
+
+server.put('/', (req, res)=>{
+     res.json({type:'Put'})
+})
+
+server.delete('/', (req, res)=>{
+     res.json({type:'delete'})
+})
+
+server.patch('/', (req, res)=>{
+     res.json({type:'Patch'})
+})
+
+server.get('/demo', (req, res)=>{
+     // res.json(products)
+     // res.sendStatus(404)
+     // res.sendStatus(201).send("<h1>hello express</h1>")
+     // res.sendFile("C:\Users\hp\Desktop\coding file\MERN\index.html")
+})
+
+
+
+
+
+
+
+server.listen(8080, ()=>{
+     console.log("server started");
+     
+})
+
+
+
+    

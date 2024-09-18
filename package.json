@@ -7,12 +7,14 @@
     "hmr": "nodemon index.js",
     "nodemon": "npm run hmr",
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
- "author": "vishwamohini",
+  "author": "vishwamohini",
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.0",
+    "morgan": "^1.10.0",
     "nodemon": "^3.1.4"
   }
 }

@@ -24,7 +24,7 @@ exports.createPRODUCTS =async (req, res) => {
 };
 
 exports. getAllProducts=async(req, res)=>{
-  const products=await Product.find({price:{$gt:80}});
+  const products=await Product.find();
      res.json(products)
 }
 

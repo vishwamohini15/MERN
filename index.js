@@ -3,6 +3,7 @@ const express=require('express');
 const morgan=require('morgan')
 const mongoose = require('mongoose');
 // const { Schema } = mongoose;
+const cors = require('cors')
 const server= express();
 const productRouter=require('./routs/route-product');
 const userRouter=require('./routs/user');
@@ -29,6 +30,7 @@ const { type } = require('os');
 const { Agent } = require('http');
 
 //body parser
+server.use(cors());
 server.use(express.json())
 server.use(morgan('default'))
 server.use(express.static(process.env.PUBLIC_DIR))

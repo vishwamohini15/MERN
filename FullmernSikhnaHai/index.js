@@ -1,44 +1,41 @@
-const lib=require('./lib.js')
-const express=require('express')
+const http=require('http');
+// const { json } = require('stream/consumers');
 
-console.log("helo world");
+const fs=require('fs')
 
-const server=express();
+const index=fs.readFileSync('index.html', 'utf-8')
+const data=fs.readFileSync('data.json', 'utf-8')
+
+
+// const data={age:5};
+const server=http.createServer((req,res)=>{
+
+     console.log(req.url);
+
+     switch(req.url){
+          case '/':
+     res.setHeader('Content-Type', 'text/html')
+          res.end(index);
+          break;
+          case '/api':
+     res.setHeader('Content-Type', 'application/json')
+          res.end(data);
+          break
+          default:
+               res.end("hello")
+               break;
+     }
+     
+     console.log('server started');
+     res.setHeader('dummy', 'dummyvalue')
+     // res.setHeader('Content-Type', 'application/json')
+
+
+     // res.end("<h1>hello</h1>")
+     // res.end(data)
+     res.end(index)
+
+     // res.end(JSON.stringify(data));
+})
+
 server.listen(8080);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { sum, diff } from "./lib.js";
-// const { isUtf8 } = require('buffer');
-// const fs=require('fs')
-
-
-// const t1=performance.now()
-// // const txt=fs.readFileSync('demo.txt', 'utf-8')
-// fs.readFile('demo.txt', 'utf-8',(err,txt)=>{
-//      console.log(txt);
-
-// })
-
-// const t2=performance.now()
-// console.log(t2-t1);
-
-
-
-// console.log(lib.sum(4,5), lib.diff(3,6));
-
-// const a=5;
-

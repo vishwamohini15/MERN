@@ -8,50 +8,63 @@ const products=data.products;
 const express=require('express');
 const { type } = require('os');
 const server=express()
-
 const morgan=require('morgan')
 
+//bodyparse
 server.use(express.json())
 server.use(morgan('default'))
-
 server.use(express.static('public'))
 
+// server.use(auth)
 
-// server.use((req,res,next)=>{
-// console.log(req.method, req.ip, req.hostname,new Date(), req.get('user-agent'),req.method );
-// next()
-// })
-
-const auth=(req,res,next)=>{
-// console.log(req.query);
-// if (req.body.password=='123') {
-//      next()
-// }else{
-//      res.sendStatus(401)
-// }
-next()
-}
-server.use(auth)
+    //create post   C R U D
+    server.post('/products',(req, res)=>{
+     console.log(req.body);
+     products.push(req.body)
+ res.status(201).json(req.body)
+})
 
 
-//api end-point
-server.get('/product/:id', auth,(req, res)=>{
-     console.log(req.params);
+//read products get
+server.get('/products',(req, res)=>{
+ res.json(products)
+})
+//read products get id
+server.get('/products/:id',(req, res)=>{
+     const id=+req.params.id
+     const product=products.find(p=>p.id===id)
      
- res.json({type:'GET'})
-})
-server.post('/', auth,(req, res)=>{
- res.json({type:'post'})
-})
-server.put('/', (req, res)=>{
- res.json({type:'put'})
-})
-server.delete('/', (req, res)=>{
- res.json({type:'delete'})
-})
-server.patch('/', (req, res)=>{
- res.json({type:'patch'})
-})
+     res.json(product)
+    })
+
+// update put/id
+    server.put('/products/:id',(req, res)=>{
+     const id=+req.params.id
+     const productindex=products.findIndex(p=>p.id===id)
+     products.splice(productindex,1,{...req.body,id:id})
+     res.status(201).json()
+    })
+// update patch/id
+server.patch('/products/:id',(req, res)=>{
+     const id=+req.params.id
+     const productindex=products.findIndex(p=>p.id===id)
+     const product=products[productindex]
+     products.splice(productindex,1,{...product,...req.body})
+     res.status(201).json()
+    })
+
+  // update delete/id
+  server.delete('/products/:id',(req, res)=>{
+     const id=+req.params.id
+     const productindex=products.findIndex(p=>p.id===id)
+     const product=products[productindex]
+     products.splice(productindex,1)
+     res.status(201).json(product)
+    })
+
+
+
+
 
 server.get('/demo', (req, res)=>{
      // res.send("<h1>hello</h1>")

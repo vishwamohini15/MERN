@@ -1,57 +1,67 @@
-const http=require('http');
-// const { json } = require('stream/consumers');
-
 const fs=require('fs');
 const { json } = require('stream/consumers');
 
 const index=fs.readFileSync('index.html', 'utf-8')
 const data=JSON.parse(fs.readFileSync('data.json', 'utf-8'))
-
 const products=data.products;
 
+const express=require('express');
+const { type } = require('os');
+const server=express()
+
+const morgan=require('morgan')
+
+server.use(express.json())
+server.use(morgan('default'))
+
+server.use(express.static('public'))
 
 
-// const data={age:5};
-const server=http.createServer((req,res)=>{
-     console.log(req.url, req.method);
-     if (req.url.startsWith('/product')) {
-          const id=req.url.split('/')[2];          
-         const product= products.find(p=>p.id===(+id))
-         console.log(product);
-         res.setHeader('Content-Type', 'text/html')
-         let modyfyindex=index.replace('**title**', product.title).replace('**thumbnail**', product.thumbnail).replace('**price**', product.price).replace('**rating**', product.rating)
-               res.end(modyfyindex);
-               return;
-     }
+// server.use((req,res,next)=>{
+// console.log(req.method, req.ip, req.hostname,new Date(), req.get('user-agent'),req.method );
+// next()
+// })
 
-              
+const auth=(req,res,next)=>{
+// console.log(req.query);
+// if (req.body.password=='123') {
+//      next()
+// }else{
+//      res.sendStatus(401)
+// }
+next()
+}
+server.use(auth)
 
-     switch(req.url){
-          case '/':
-     res.setHeader('Content-Type', 'text/html')
-          res.end(index);
-          break;
 
-          case '/api':
-     res.setHeader('Content-Type', 'application/json')
-          res.end(JSON.stringify(data));
-          break;
-          
-          default:
-               res.writeHead(404)
-               res.end();
-     }
+//api end-point
+server.get('/product/:id', auth,(req, res)=>{
+     console.log(req.params);
      
-     console.log('server starte');
-     // res.setHeader('dummy', 'dummyvalue')
-     // res.setHeader('Content-Type', 'application/json')
-
-
-     // res.end("<h1>hello</h1>")
-     // res.end(data)
-     // res.end(index)
-
-     // res.end(JSON.stringify(data));
+ res.json({type:'GET'})
+})
+server.post('/', auth,(req, res)=>{
+ res.json({type:'post'})
+})
+server.put('/', (req, res)=>{
+ res.json({type:'put'})
+})
+server.delete('/', (req, res)=>{
+ res.json({type:'delete'})
+})
+server.patch('/', (req, res)=>{
+ res.json({type:'patch'})
 })
 
-server.listen(8080);
+server.get('/demo', (req, res)=>{
+     // res.send("<h1>hello</h1>")
+     // res.sendFile("C:\Users\hp\Desktop\coding file\MERN\FullmernSikhnaHai\index.html")
+     // res.json(products)
+     // res.sendStatus(404)
+})
+
+server.listen(8080, ()=>{
+     console.log("server started");
+     
+})
+

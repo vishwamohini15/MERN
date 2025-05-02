@@ -1,17 +1,20 @@
 const fs=require('fs');
 const { json } = require('stream/consumers');
-// const index=fs.readFileSync('index.html', 'utf-8')
-const data=JSON.parse(fs.readFileSync('data.json', 'utf-8'))
-const products=data.products;
+const model=require('../model/product')
+const product=model.product
 
+exports.createproduct=async(req, res)=>{
+    const Product=new product(req.body)
 
-exports.createproduct=(req, res)=>{
-     console.log(req.body);
-     products.push(req.body)
- res.status(201).json(req.body)
+    await Product.save();
+    console.log(Product);
+    
+ res.status(201).json(Product)
  }
-exports.getAllproducts=(req, res)=>{
-     res.json(products)
+
+exports.getAllproducts=async(req, res)=>{
+     const Produtt=await product.find()
+     res.json(Produtt)
     }
  
 exports.getproduct=(req, res)=>{

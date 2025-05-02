@@ -4,10 +4,25 @@ const express=require('express');
 const { type } = require('os');
 const server=express()
 const morgan=require('morgan')
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 const productRouter=require('./routs/product')
 const userRouter=require('./routs/user')
 
 console.log('env', process.env.DB_password);
+
+//db connection
+
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb://127.0.0.1:27017/ecommerce');
+  console.log('database connected');
+  
+
+  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
+}
+
 
 //bodyparse
 server.use(express.json())

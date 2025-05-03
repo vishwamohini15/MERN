@@ -1,6 +1,8 @@
 const fs=require('fs');
+
 const { json } = require('stream/consumers');
-const model=require('../model/product')
+const model=require('../model/product');
+const { default: mongoose } = require('mongoose');
 const product=model.product
 
 exports.createproduct=async(req, res)=>{
@@ -17,29 +19,29 @@ exports.getAllproducts=async(req, res)=>{
      res.json(Produtt)
     }
  
-exports.getproduct=(req, res)=>{
-     const id=+req.params.id
-     const product=products.find(p=>p.id===id)
+exports.getproduct=async(req, res)=>{
+     const id=req.params.id
+     const Produtt=await product.findById(id)
+
      
-     res.json(product)
+     res.json(Produtt)
     }
-exports.replaceproduct=(req, res)=>{
-     const id=+req.params.id
-     const productindex=products.findIndex(p=>p.id===id)
-     products.splice(productindex,1,{...req.body,id:id})
-     res.status(201).json()
+exports.replaceproduct=async(req, res)=>{
+     const id=req.params.id
+     const doc=await product.findOneAndReplace({_id:id}, req.body, {new:true})
+     res.status(201).json(doc)
     }
-    exports.updateproduct=(req, res)=>{
-     const id=+req.params.id
-     const productindex=products.findIndex(p=>p.id===id)
-     const product=products[productindex]
-     products.splice(productindex,1,{...product,...req.body})
-     res.status(201).json()
+    exports.updateproduct=async(req, res)=>{
+     const id=req.params.id
+     const doc=await product.findOneAndUpdate({_id:id}, req.body, {new:true})
+
+    
+     res.status(201).json(doc)
     }
-    exports.deleteproducts=(req, res)=>{
-     const id=+req.params.id
-     const productindex=products.findIndex(p=>p.id===id)
-     const product=products[productindex]
-     products.splice(productindex,1)
-     res.status(201).json(product)
+    exports.deleteproducts=async(req, res)=>{
+        const id=req.params.id
+        const doc=await product.findOneAndDelete({_id:id})
+   
+       
+        res.status(201).json(doc)
     }
